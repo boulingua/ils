@@ -27,7 +27,7 @@ declare the gap honestly rather than fake it).
 **Why Italian.** Completes the Romance triad alongside `fle`/`ele`; German
 learners have strong transfer from cognates and shared Latinate vocabulary;
 excellent openly-licensed corpus (Wikisource, LiberLiber public-domain
-literature, Wikimedia audio) and a usable Piper TTS voice.
+literature, Wikimedia audio) and one licence-clear Piper TTS voice.
 
 **Defining challenges (from the language context):**
 
@@ -39,9 +39,11 @@ literature, Wikimedia audio) and a usable Piper TTS voice.
 2. **Written accents and stress.** Learners must handle `à è é ì ò ó ù`, the
    open/closed `e`/`o` distinction, elision/apostrophe (*l'amico*, *un'amica*),
    and unpredictable stress (*àncora* vs *ancòra*).
-3. **Native audio quality gate.** A good Piper `it_IT` voice exists, but
-   gemination and lexical stress must be spot-checked — a TTS that flattens
-   *nonno*→*nono* would teach the wrong contrast.
+3. **Native audio: one usable voice, and a quality gate on it.** Exactly one
+   `it_IT` voice in the catalogue carries a licence that can ship (§2), and it is
+   single-speaker; gemination and lexical stress must still be spot-checked, because
+   a TTS that flattens *nonno*→*nono* would teach the wrong contrast — and there is
+   no second Italian voice to fall back to if it does.
 4. **Register and variant.** `tu`/`Lei`, and the productive-vs-receptive split of
    *passato prossimo* (produce) vs *passato remoto* (recognise, for literature).
 5. **Full-scope ambition.** A1–C1 across all in-scope CEFR scales is a large,
@@ -72,14 +74,29 @@ literature, Wikimedia audio) and a usable Piper TTS voice.
   literature. *Recommendation: one norm, standard, explicitly stated in the About
   page.*
 
-- **Native voice / Piper TTS — available, add the voices.** `rhasspy/piper-voices`
-  ships `it_IT` voices (e.g. `it_IT-paola-medium`, `it_IT-riccardo-x_low`); they
-  are **not yet** in `audiogen/get_voices.sh` (currently fr/de/en only).
-  *Recommendation: add `it_IT-paola-medium` (primary) and `it_IT-riccardo-x_low`
-  (secondary, for alternating dialogue speakers); **gate on a gemination/stress
-  QA pass** (minimal-pair listen-test: *nonno/nono*, *pala/palla*, *ancora*
-  stress) before committing any audio; fall back to per-segment respelling
-  overrides where the voice mis-renders.*
+- **Native voice / Piper TTS — `it_IT-serena-medium` (CC BY 4.0), single-voice.**
+  The two voices an earlier draft of this document named, `it_IT-paola-medium`
+  (primary) and `it_IT-riccardo-x_low` (second speaker), both state
+  `License: See URL` on their model cards with no resolvable statement behind the
+  URL. "No statement" is not permission, and audio synthesised from a model
+  inherits its training data's terms, so neither can go inside a CC BY-SA 4.0
+  course. `it_IT-serena-medium` is the **only** licence-clear Italian voice;
+  `it_IT-serena-high` is the same speaker at a higher tier, not a second speaker.
+  *Consequences, both binding: (a) the two-speaker dialogue plan is not
+  achievable — `ils` ships **single-voice dialogues with typographic speaker
+  labels**, the same fallback `ele/ROADMAP.md` specifies for this case, and never
+  a Spanish or French voice standing in for the second Italian one; (b) CC BY 4.0
+  is an attribution licence, so `serena` needs a row in `NOTICE.md` before its
+  audio ships. Still **gate on a gemination/stress QA pass** (minimal-pair
+  listen-test: `nonno/nono`, `pala/palla`, `ancora` stress) before committing any
+  audio, and fall back to per-segment respelling overrides where the voice
+  mis-renders — with no second Italian speaker, respelling is the only remedy
+  short of transcript-only.*
+- **Voice IDs are never hand-typed.** The ID, tier and licence above are read from
+  `audiogen/voices.yml` (relocating to `kit/audio/voices.yml` at F1), which is the
+  single source of truth and keeps the rejected `paola`/`riccardo` rows with their
+  licences so the decision stays auditable. A voice ID retyped from memory is how
+  a 404 gets written into a download script.
 
 ---
 
@@ -145,10 +162,15 @@ marked values.
   root (shape per `curriculum/examples/de-a1/conformance.yml`): `framework`,
   `framework_version`, `language: it`, `declared_conformance: full`, and per-unit
   `realizations` with `implements_id` + the Italian can-do wording. Every
-  `implements_id` **must resolve** in `curriculum/levels/*.md`; wire
-  `curriculum/scripts/id-audit.sh` into CI as a blocking gate. Add a per-scale
-  coverage table (levels covered vs `no-official-descriptor`) so coverage is
-  auditable, not asserted.
+  `implements_id` **must resolve**. Add a per-scale coverage table (levels covered
+  vs `no-official-descriptor`) so coverage is auditable, not asserted.
+
+- **Gate (blocking).** The reusable workflow
+  `boulingua/.github/.github/workflows/course-build.yml@v1` runs
+  `python .curriculum/scripts/conformance_audit.py resolve --manifest
+  conformance.yml --content content`, which resolves this repo's manifest against
+  the framework's levels and scale registry. `id-audit.sh` audits the framework's
+  *own* level files and **cannot** validate this repo. Do not wire it here.
 
 ---
 
@@ -175,7 +197,7 @@ CEFR self-assessment grid. **Editorial pages:** About / course overview.
 
 **Acceptance criteria per phase:** every unit has (a) all five steps, (b)
 differentiated exercises **with answer keys** + teacher notes, (c) resolved
-`implements_id`s that pass `id-audit.sh`, (d) committed slide deck + worksheet
+`implements_id`s that pass the §4 gate, (d) committed slide deck + worksheet
 (`materials_status: ready`), (e) native-voice audio for vocab/dialogue/text, (f)
 a registered VG Wort mark once the page clears 1800 chars, (g) green gate battery.
 A phase is "done" when its level `_index.md` landing lists every unit + exam and
@@ -197,12 +219,15 @@ the level's coverage row is complete in `conformance.yml`.
   Front matter carries `presentation`/`worksheet` `{ file, thumbnail }` and, for
   exams, `exam { file }`.
 
-- **Native-voice audio.** After adding the `it_IT` voices to
-  `audiogen/get_voices.sh`, run
-  `python build_audio.py /path/to/ils voices/it_IT-paola-medium.onnx it 'content/level-*/units/*/index.md'`.
-  Output OGG/Opus, committed; idempotent (re-synth only on text/voice change).
-  Use `it_IT-riccardo-x_low` as the second speaker in dialogues. **Decision:
-  Italian audio ships, gated on the gemination/stress QA listen-test** (§2).
+- **Native-voice audio.** After adding the `ils` row to `audiogen/voices.yml`
+  (→ `kit/audio/voices.yml` at F1), run
+  `python build_audio.py /path/to/ils <serena .onnx> it 'content/level-*/units/*/index.md'`
+  — the `.onnx` path comes from that row and is never typed in by hand. Output
+  OGG/Opus, committed; idempotent (re-synth only on text/voice change). There is
+  **no second speaker**: `it_IT-serena-medium` is the only licence-clear Italian
+  voice (§2), so dialogues are single-voice with typographic speaker labels.
+  **Decision: Italian audio ships, gated on the gemination/stress QA listen-test**
+  (§2) and on `serena`'s CC BY 4.0 attribution row landing in `NOTICE.md`.
 
 - **Thumbnails & downloads.** Generate deck/worksheet thumbnails alongside
   materials; the downloads gate (`verify_downloads.py`) checks each linked file
@@ -261,13 +286,14 @@ Procedure per work:
 - **M5 — C1 → `full` conformance complete (L).** All A1–C1 in-scope scales
   covered; appendices finished; coverage tables complete.
 
-**Dependencies:** audio pipeline (add `it_IT` voices + QA) blocks M1; `id-audit.sh`
-CI gate blocks every phase sign-off; materials generation blocks each unit's
-`ready` status.
+**Dependencies:** audio pipeline (the `ils` row in `audiogen/voices.yml`, the
+`NOTICE.md` attribution row, and the gemination QA pass) blocks M1; the §4
+conformance gate blocks every phase sign-off; materials generation blocks each
+unit's `ready` status.
 
 **Definition of done — flip from "coming soon" to active on the world map:**
 site builds green on every gate (VG Wort coverage/render, downloads, legal,
-attribution, `id-audit.sh`); pre-A1 + **A1 fully live** with materials, audio and
+attribution, the §4 conformance gate); pre-A1 + **A1 fully live** with materials, audio and
 registered VG Wort marks; `conformance.yml` publishes a truthful scope with
 `declared_conformance` at least `core`; About page and legal pages complete. (Full
 `full`-level conformance is the M5 target, not the flip gate.)
@@ -276,10 +302,13 @@ registered VG Wort marks; `conformance.yml` publishes a truthful scope with
 
 ## 9. Open decisions & risks
 
-- **Gemination in TTS (risk).** If `it_IT-paola` flattens double consonants or
-  mis-stresses, the audio would teach a wrong contrast. *Mitigation:* minimal-pair
-  QA listen-test before any commit; per-segment respelling overrides; consider a
-  higher-quality voice if one lands in `piper-voices`.
+- **Gemination in TTS (risk, now unhedged).** If `it_IT-serena-medium` flattens
+  double consonants or mis-stresses, the audio would teach a wrong contrast — and
+  because it is the only licence-clear Italian voice (§2), there is no second
+  speaker to switch to. *Mitigation:* minimal-pair QA listen-test before any
+  commit; per-segment respelling overrides; `it_IT-serena-high` (same speaker,
+  same CC BY 4.0) if the tier helps; transcript-only for individual items that
+  cannot be fixed. Revisit if an Italian voice lands with an allow-listed licence.
 - **Open/closed `e`/`o` (decision).** Whether to mark è/é and ò/ó distinctions
   explicitly in A1 or defer. *Lean:* introduce written accents in pre-A1, treat
   the open/closed *sound* distinction as awareness-only until B1.
@@ -290,7 +319,7 @@ registered VG Wort marks; `conformance.yml` publishes a truthful scope with
   sites; confirm i18n strings.
 - **pre-A1 descriptor coverage (risk).** Many CV scales lack pre-A1 descriptors;
   the onboarding stage must record `no-official-descriptor` rather than mint
-  invented IDs, or `id-audit.sh` fails.
+  invented IDs, or the §4 gate fails.
 - **C2 gap (accepted).** Declared out of committed scope; revisit only if
   openly-licensed C2 source material becomes available.
 - **Content licence (open).** README notes CC BY 4.0 "to be confirmed"; the
