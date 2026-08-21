@@ -4,8 +4,8 @@ Build plan for **Italiano come Lingua Straniera** (`ils`), the boulingua Italian
 course, from the current empty scaffold (LICENSE + README + brand icons) to a
 live, standards-conforming Hugo site with content, materials, native-voice audio
 and VG Wort counting marks on every editorial page. Signature accent `#8023C7`
-(light) / `#B97EE7` (dark), pentagon mark, already registered in
-`pagegen/data/accents.yaml`.
+(light) / `#B97EE7` (dark), pentagon mark, already registered in the kit's
+`data/accents.yaml`.
 
 ---
 
@@ -13,8 +13,8 @@ and VG Wort counting marks on every editorial page. Signature accent `#8023C7`
 
 **What it is.** A free, openly-licensed Italian course for the German
 *Gesamtschule* system and independent learners, following the boulingua
-five-step unit model (Activate → Input → Practise → Apply → Reflect), built by
-instantiating `pagegen` and conforming to the `curriculum` descriptor framework.
+five-step unit model (Activate → Input → Practise → Apply → Reflect), built on
+the `kit` platform and conforming to the `curriculum` descriptor framework.
 Target learners: German-L1 secondary pupils and adult self-learners starting
 from zero.
 
@@ -93,51 +93,81 @@ literature, Wikimedia audio) and one licence-clear Piper TTS voice.
   mis-renders — with no second Italian speaker, respelling is the only remedy
   short of transcript-only.*
 - **Voice IDs are never hand-typed.** The ID, tier and licence above are read from
-  `audiogen/voices.yml` (relocating to `kit/audio/voices.yml` at F1), which is the
-  single source of truth and keeps the rejected `paola`/`riccardo` rows with their
-  licences so the decision stays auditable. A voice ID retyped from memory is how
+  `kit/audio/voices.yml`, which is the single source of truth, must never be
+  hand-copied into prose, and keeps the rejected `paola`/`riccardo` rows with
+  their licences so the decision stays auditable. A voice ID retyped from memory is how
   a 404 gets written into a download script.
 
 ---
 
-## 3. Instantiation from pagegen
+## 3. Instantiation from the kit
 
-Stand up the site by copying the template into this repo and editing only the
-marked values.
+Stand up the site by building the repo around the kit and editing only the
+marked values. The shared surface is imported, never copied.
 
-1. **Copy the template.** Copy `pagegen`'s tracked tree (everything except
-   `public/`, `resources/`, `.hugo_build.lock`) into `ils/`, preserving
-   `layouts/`, `scripts/`, `data/`, `archetypes/`, `.github/workflows/`,
-   `i18n/`, `assets/`, `static/`, the three legal pages and `go.mod`.
+1. **Create the repo.** `ils/` holds a short `hugo.toml` — baseURL, title,
+   languageCode, `[params]`, menus, and the module import
 
-2. **Edit `hugo.toml`** (only the CHANGE-marked keys):
+   ```toml
+   [module]
+     [[module.imports]]
+       path = "github.com/boulingua/kit"
+   ```
+
+   — a `go.mod`/`go.sum` requiring `github.com/boulingua/kit` at the pinned tag
+   (`v1.0.0`), `boulingua.yml` (the per-course config the gate battery reads),
+   the twelve-line `.github/workflows/deploy.yml` that calls the org's reusable
+   workflow, an empty `content/` skeleton and the three legal pages. `layouts/`,
+   `assets/`, `i18n/`, `archetypes/` and `scripts/` are **not** copied and must
+   never appear in this repo: they are the drift surface, and a file that is not
+   here cannot fork. Hugo resolves the first four from the module; CI checks the
+   kit out at the pinned tag so `scripts/` and the gate battery are on disk
+   before Hugo runs. `public/`, `resources/` and `.hugo_build.lock` stay
+   untracked.
+
+2. **Vendor `_materials/`.** Run `kit materials sync` — it assembles the kit's
+   `latex/`, `fonts/` and `brand/icons/` into the flat `_materials/` tree the
+   LaTeX build expects — and commit it. This is the only vendored surface,
+   because XeLaTeX cannot read a Hugo module, and it is verified against the
+   digests in `kit.lock` on every build, so a hand-edited style file fails
+   loudly instead of forking. (Earlier drafts told you to copy `_materials/`
+   from the template; `pagegen` never had one.)
+
+3. **Edit `hugo.toml`** (only the CHANGE-marked keys):
    - `baseURL = "https://boulingua.github.io/ils/"`
    - `title = "Italiano come Lingua Straniera — S. Le Boulanger"`
    - `languageCode = "it"`, `defaultContentLanguage = "it"`
    - `[params].navTitle = "Italiano"`
    - `description` / `keywords` — Italian course, CEFR A1–C1, OER
-   - `[params].code = "ils"`  ← selects the accent from `data/accents.yaml`
-   - `[params.plausible].domain = "boulingua.github.io/ils"`
+   - `[params].code = "ils"`  ← selects the accent from the kit's
+     `data/accents.yaml`. Setting it matters: the kit ships the neutral graphite
+     `template` accent by default, so a course that forgets looks obviously
+     unconfigured rather than looking like DaF.
+   - `[params.plausible].domain = "boulingua.github.io/ils"` — keep this
+     sub-table **last** under `[params]`; TOML scopes everything after a header
+     to that header, so opening it early would silently move the bare `[params]`
+     keys under it and leave the site unstyled.
    - `[[params.social]].url = "https://github.com/boulingua/ils"`
    - `[[menu.main]]` — rebuild sections to mirror `content/`: **Livelli**
      (pre-A1, A1, A2, B1, B2, C1) → **Materiali** (Presentazioni, Schede) →
      **Info** → **Legal** (Impressum/Datenschutz/Haftungsausschluss kept in
      German — they are statutory, not content).
 
-3. **Regenerate the brand mark.** Run `python brand/make_icon.py` — it reads
-   `code = "ils"` and paints the pentagon + favicons in `#8023C7`. Confirm
-   `data/accents.yaml` already carries the `ils` row (accent `#8023C7`, hover
-   `#671CA0`, dark `#B97EE7`) — it does; no edit needed.
+4. **Regenerate the brand mark.** Run the kit's `brand/make_icon.py` — it reads
+   `code = "ils"` and paints this repo's pentagon + favicons in `#8023C7`.
+   Confirm the kit's `data/accents.yaml` already carries the `ils` row (accent
+   `#8023C7`, hover `#671CA0`, dark `#B97EE7`) — it does; it arrives with the
+   module, and no copy of it belongs here.
 
-4. **Fill legal placeholders.** Replace the `⟨…⟩` placeholders in
+5. **Fill legal placeholders.** Replace the `⟨…⟩` placeholders in
    `impressum.md` / `datenschutz.md` / `haftungsausschluss.md`; keep the VG Wort
    METIS disclosure paragraph in `datenschutz.md`.
 
-5. **First green build + Pages.** `hugo --gc --minify`, run the local gate battery
-   (`scripts/`), then enable the `build-deploy.yml` workflow and GitHub Pages
-   (source: Actions). Definition of a green first build: site builds, pentagon is
-   purple, one demo unit renders, VG Wort render-verify passes on any registered
-   marks.
+6. **First green build + Pages.** `hugo --gc --minify --panicOnWarning`, run the
+   gate battery locally through `bin/kit`, then enable the `deploy.yml` workflow
+   and GitHub Pages (source: Actions). Definition of a green first build: site
+   builds with no warnings, pentagon is purple, one demo unit renders, VG Wort
+   render-verify passes on any registered marks.
 
 ---
 
@@ -213,14 +243,14 @@ the level's coverage row is complete in `conformance.yml`.
   VG Wort mark**.
 
 - **Materials pipeline (committed).** Generate locally from the branded LaTeX
-  templates: **slidegen** → `.odp`/PDF decks, **sheetgen** → PDF worksheets
+  templates in `_materials/` (from `kit/latex/`): `.odp`/PDF decks, PDF worksheets
   (+ answer keys). Commit under `static/materials/` and `static/downloads/<level>/`;
   CI only *verifies* presence + attribution (no TeX Live in the deploy path).
   Front matter carries `presentation`/`worksheet` `{ file, thumbnail }` and, for
   exams, `exam { file }`.
 
-- **Native-voice audio.** After adding the `ils` row to `audiogen/voices.yml`
-  (→ `kit/audio/voices.yml` at F1), run
+- **Native-voice audio.** After adding the `ils` row to `kit/audio/voices.yml`,
+  run
   `python build_audio.py /path/to/ils <serena .onnx> it 'content/level-*/units/*/index.md'`
   — the `.onnx` path comes from that row and is never typed in by hand. Output
   OGG/Opus, committed; idempotent (re-synth only on text/voice change). There is
@@ -237,7 +267,7 @@ the level's coverage row is complete in `conformance.yml`.
 
 ## 7. VG Wort — pixel assignment for ALL content pages
 
-**Non-skippable.** Per `pagegen/docs/vgwort-standard.md`, **every** content page
+**Non-skippable.** Per `kit/docs/vgwort-standard.md`, **every** content page
 with ≥1800 chars of original prose — every unit, every exam, every appendix,
 every editorial page (About/overview) — carries **exactly one** VG Wort
 Zählmarke on exactly one URL. Navigation surfaces (home, `/materiali/`, tag
@@ -273,8 +303,8 @@ Procedure per work:
 
 ## 8. Milestones & sequencing
 
-- **M0 — Scaffold live (S).** §3 instantiation: template copied, `hugo.toml`
-  set, pentagon regenerated, legal placeholders filled, first green build,
+- **M0 — Scaffold live (S).** §3 complete: repo standing on the kit module,
+  `_materials/` vendored, `hugo.toml` set, pentagon regenerated, legal placeholders filled, first green build,
   Pages deploying. `conformance.yml` stub with `declared_conformance: full`.
 - **M1 — MVP: pre-A1 + A1 live (L).** Onboarding + 12 A1 units + 2 exams, all
   with materials, audio, resolved descriptor IDs, VG Wort marks. This is the
@@ -286,7 +316,7 @@ Procedure per work:
 - **M5 — C1 → `full` conformance complete (L).** All A1–C1 in-scope scales
   covered; appendices finished; coverage tables complete.
 
-**Dependencies:** audio pipeline (the `ils` row in `audiogen/voices.yml`, the
+**Dependencies:** audio pipeline (the `ils` row in `kit/audio/voices.yml`, the
 `NOTICE.md` attribution row, and the gemination QA pass) blocks M1; the §4
 conformance gate blocks every phase sign-off; materials generation blocks each
 unit's `ready` status.
@@ -323,4 +353,4 @@ registered VG Wort marks; `conformance.yml` publishes a truthful scope with
 - **C2 gap (accepted).** Declared out of committed scope; revisit only if
   openly-licensed C2 source material becomes available.
 - **Content licence (open).** README notes CC BY 4.0 "to be confirmed"; the
-  pagegen standard is **CC BY-SA 4.0** — align before first release.
+  platform standard is **CC BY-SA 4.0** — align before first release.
