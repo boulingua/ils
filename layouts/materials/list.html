@@ -1,0 +1,37 @@
+{{ define "title" }}{{ .Title }} · {{ .Site.Title }}{{ end }}
+{{ define "content" }}
+{{- /* Simple materials listing. The hub page renders its own prose + links to
+       the presentation/worksheet sections. A section with `material_kind` set
+       lists the committed PDFs under static/materials/<kind>/. The discovery
+       "network graph" is intentionally NOT part of the template (bespoke,
+       needs node_modules); a course may add it back per-site. */ -}}
+{{- $kind := .Params.material_kind -}}
+<section class="container page">
+  <article>
+    <header>
+      <h1 class="title">{{ .Title }}</h1>
+      {{ with .Description }}<p class="lead">{{ . }}</p>{{ end }}
+    </header>
+    {{ .Content }}
+    {{ if $kind }}
+      {{- $dir := printf "materials/%ss" $kind -}}
+      <ul class="materials-list">
+      {{- range (readDir (printf "static/%s" $dir)) -}}
+        {{- if strings.HasSuffix .Name ".pdf" -}}
+          <li><a href="{{ (printf "/%s/%s" $dir .Name) | relURL }}">{{ .Name }}</a></li>
+        {{- end -}}
+      {{- end -}}
+      </ul>
+    {{ else }}
+      {{- /* ils: the hub lives at /materiali/ with Italian child sections;
+             the committed PDFs stay under static/materials/<kind>s so the
+             shared scripts (build_materials_latex.py, render_thumbs.py,
+             verify_downloads.py) keep working unchanged. */ -}}
+      <ul class="materials-list">
+        <li><a href="{{ "/materiali/presentazioni/" | relURL }}">{{ i18n "presentations" | default "Presentazioni" }}</a></li>
+        <li><a href="{{ "/materiali/schede/" | relURL }}">{{ i18n "worksheets" | default "Schede" }}</a></li>
+      </ul>
+    {{ end }}
+  </article>
+</section>
+{{ end }}

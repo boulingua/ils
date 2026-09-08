@@ -1,0 +1,15 @@
+{{/*
+  badge — CEFR level disc, styled by assets/css/custom.css (.cefr-badge).
+  Added so level landings can carry the level disc without raw HTML in the
+  Markdown source (the house rule: section landings use shortcodes only).
+
+  Args:
+    0 / level = css variant: a1 | a2 | b1 | b2 | c1
+    1 / label = visible text (default: the variant, uppercased)
+  Example:
+    {{< badge a1 >}}          → A1
+    {{< badge b2 "B2" >}}
+*/}}
+{{- $level := lower (or (.Get "level") (.Get 0) "") -}}
+{{- $label := or (.Get "label") (.Get 1) (upper $level) -}}
+<span class="cefr-badge {{ $level }}">{{ $label }}</span>
