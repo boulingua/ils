@@ -1,0 +1,136 @@
+{
+  "scope": "Pronunciation drafts and one A1 teaching unit with its assessment; no M2 or achieved coverage claim",
+  "sources": [
+    {
+      "url": "https://accademiadellacrusca.it/it/consulenza/tu-lei-voi-quale-pronome-scegliere-per-rivolgersi-a-qualcuno/41840",
+      "use": "Contextual tu/Lei and youth/adult asymmetry"
+    },
+    {
+      "url": "https://www.treccani.it/enciclopedia/alfabeto_%28Enciclopedia-dell%27Italiano%29/",
+      "use": "Traditional alphabet, loan letters, letters versus sounds"
+    }
+  ],
+  "pages": [
+    {
+      "page": "a1/units/unit01-erste-begegnung",
+      "sha256": "4ea1ae81877ca8f95a8529dec54c06d09cdedb4203f3001add64d65c10958a8f",
+      "review_status": "pending",
+      "reviewer": null,
+      "mappings": [
+        {
+          "id": "A1.REC.overall-reading-comprehension.01",
+          "statement": "You can make sense of very short, simple texts one phrase at a time, spotting familiar names, words and basic phrases and rereading as needed.",
+          "basis": "proposed",
+          "task_evidence": "Input/Practise1/5 require distinguishing explicitly stated origin/residence and a wrong identity; exam1 repeats with new message.",
+          "review_decision": null
+        },
+        {
+          "id": "A1.INT.conversation.03",
+          "statement": "You introduce someone and use basic phrases for greeting and taking your leave.",
+          "basis": "proposed",
+          "task_evidence": "Apply performs introductions at a library desk and leave-taking; exam3 observes these routines.",
+          "review_decision": null
+        },
+        {
+          "id": "A1.INT.information-exchange.05",
+          "statement": "I can tell people my name and ask other people theirs.",
+          "basis": "proposed",
+          "task_evidence": "Practise4 and Apply ask/answer names with appropriate forms; exam3 includes reciprocal role rotation.",
+          "review_decision": null
+        },
+        {
+          "id": "A1.LING.orthographic-control.01",
+          "statement": "You copy familiar words and short phrases (signs, instructions, object names, shop names, set phrases), spell your address, nationality, and other personal details, and use basic punctuation like full stops and question marks.",
+          "basis": "proposed",
+          "task_evidence": "Practise2 and pronunciation cards preserve h/double letters/accents; exam2 checks exact copying.",
+          "review_decision": null
+        },
+        {
+          "id": "A1.SOC.sociolinguistic-appropriateness.01",
+          "statement": "I can make basic social contact using the simplest everyday polite forms: greetings and goodbyes, introductions, and saying please, thank you, and sorry.",
+          "basis": "proposed",
+          "task_evidence": "Input makes youth/adult address explicit; Apply practises scusi, thanks and greetings; exam3/4 evaluate social routines.",
+          "review_decision": null
+        }
+      ],
+      "source_revisions": [
+        {
+          "previous_sha256": "0f984f97ec0509c9506f455b7153aebc360bd83a545f06ef6b507ff9f59c2e33",
+          "reason": "Added verified draft download metadata; teaching body unchanged."
+        }
+      ]
+    },
+    {
+      "page": "a1/units/unit01-erste-begegnung-exam",
+      "sha256": "8cc4c554531763110d80d5fca96521b7d49a0ad4b3c8ae8c362417a07db75781",
+      "review_status": "pending",
+      "reviewer": null,
+      "mappings": [
+        {
+          "id": "A1.REC.overall-reading-comprehension.01",
+          "statement": "You can make sense of very short, simple texts one phrase at a time, spotting familiar names, words and basic phrases and rereading as needed.",
+          "basis": "proposed",
+          "task_evidence": "Input/Practise1/5 require distinguishing explicitly stated origin/residence and a wrong identity; exam1 repeats with new message.",
+          "review_decision": null
+        },
+        {
+          "id": "A1.INT.conversation.03",
+          "statement": "You introduce someone and use basic phrases for greeting and taking your leave.",
+          "basis": "proposed",
+          "task_evidence": "Apply performs introductions at a library desk and leave-taking; exam3 observes these routines.",
+          "review_decision": null
+        },
+        {
+          "id": "A1.INT.information-exchange.05",
+          "statement": "I can tell people my name and ask other people theirs.",
+          "basis": "proposed",
+          "task_evidence": "Practise4 and Apply ask/answer names with appropriate forms; exam3 includes reciprocal role rotation.",
+          "review_decision": null
+        },
+        {
+          "id": "A1.LING.orthographic-control.01",
+          "statement": "You copy familiar words and short phrases (signs, instructions, object names, shop names, set phrases), spell your address, nationality, and other personal details, and use basic punctuation like full stops and question marks.",
+          "basis": "proposed",
+          "task_evidence": "Practise2 and pronunciation cards preserve h/double letters/accents; exam2 checks exact copying.",
+          "review_decision": null
+        },
+        {
+          "id": "A1.SOC.sociolinguistic-appropriateness.01",
+          "statement": "I can make basic social contact using the simplest everyday polite forms: greetings and goodbyes, introductions, and saying please, thank you, and sorry.",
+          "basis": "proposed",
+          "task_evidence": "Input makes youth/adult address explicit; Apply practises scusi, thanks and greetings; exam3/4 evaluate social routines.",
+          "review_decision": null
+        }
+      ]
+    }
+  ],
+  "native_review": null,
+  "pedagogical_review": null,
+  "audio_decision": "transcript-only draft; no recording approved",
+  "reference_pages": [
+    {
+      "page": "aussprache/alfabeto-e-nomi",
+      "sha256": "4952f215c6be1f5de0898be833b76cff40192ba5486c5ab4078779da215263ab",
+      "review_status": "pending",
+      "reviewer": null,
+      "checks": [
+        "Check script and example spelling against cited primary references",
+        "Check pronunciation explanations and scoped exceptions",
+        "Exercise instructions with intended beginners",
+        "Review any future recording separately; no audio approval inferred"
+      ]
+    },
+    {
+      "page": "aussprache/chi-e-ci",
+      "sha256": "273551e3d6a2185619dba1bba8a44486bc9706b38091521acbbd37c723cc3afb",
+      "review_status": "pending",
+      "reviewer": null,
+      "checks": [
+        "Check script and example spelling against cited primary references",
+        "Check pronunciation explanations and scoped exceptions",
+        "Exercise instructions with intended beginners",
+        "Review any future recording separately; no audio approval inferred"
+      ]
+    }
+  ]
+}
